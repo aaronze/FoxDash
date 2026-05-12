@@ -1,0 +1,42 @@
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 98vh;
+    gap: 10px;
+}
+
+.dashboard-row {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    gap: 10px;
+}
+
+.dashboard-column {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 10px;
+}
+
+.dashboard-widget {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+}
+
+.chart-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}

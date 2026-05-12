@@ -1,0 +1,49 @@
+<div class="chart-wrapper">
+  <canvas id="solar-chart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('solar-chart').getContext('2d');
+
+    fetch('/telemetries/solar')
+        .then(response => response.json())
+        .then(data => {
+          const timestamps = data.map(point => point.timestamp);
+          const batteryChargeRate = data.map(point => Math.round(point.battery_charge_rate * 1000));
+
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: timestamps,
+              datasets: [{
+                label: 'Solar Power (Watts)',
+                data: batteryChargeRate,
+                borderColor: 'rgba(200, 0, 200, 1)',
+                borderWidth: 1,
+                pointRadius: 0,
+                fill: false
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  type: 'time',
+                  time: {
+                    unit: 'hour'
+                  }
+                },
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+        });
+  });
+</script>

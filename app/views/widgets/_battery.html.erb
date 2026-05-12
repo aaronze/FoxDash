@@ -1,0 +1,49 @@
+<div class="chart-wrapper">
+  <canvas id="battery-chart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('battery-chart').getContext('2d');
+
+    fetch('/telemetries/battery')
+        .then(response => response.json())
+        .then(data => {
+          const timestamps = data.map(point => point.timestamp);
+          const batterySoc = data.map(point => point.battery_soc);
+
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: timestamps,
+              datasets: [{
+                label: 'Battery SOC (%)',
+                data: batterySoc,
+                borderColor: 'rgba(0, 255, 0, 1)',
+                borderWidth: 1,
+                pointRadius: 0,
+                fill: false
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  type: 'time',
+                  time: {
+                    unit: 'hour'
+                  }
+                },
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+        });
+  });
+</script>

@@ -1,4 +1,264 @@
-<div>
-  <h4>Weather Forecast</h4>
-  <p>< Insert Weather Here ></p>
+<div class="dashboard-row">
+  <div class="dashboard-column current-weather weather-widget" id="current-weather-widget">
+    <h3>Today</h3>
+    <h2 id="current-title">Current Weather</h2>
+    <p class="temperature" id="current-temperature">--°C</p>
+    <p class="weather" id="current-weather">Loading...</p>
+  </div>
+
+  <div class="dashboard-column forecast-weather">
+    <% 5.times do |index| %>
+    <div class="dashboard-row forecast-row weather-widget" id="forecast-widget-<%= index + 1 %>">
+      <h2 id="forecast-title-<%= index + 1 %>"></h2>
+      <p class="temperature" id="forecast-temperature-<%= index + 1 %>"></p>
+      <p class="weather" id="forecast-weather-<%= index + 1 %>"></p>
+    </div>
+    <% end %>
+  </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    fetch('/weather')
+        .then(response => response.json())
+        .then(weather => {
+          document.getElementById('current-title').textContent = formatDate(weather.current.time);
+          document.getElementById('current-temperature').textContent = weather.current.temperature_2m + "°C";
+          document.getElementById('current-weather').textContent = describeWeather(weather.current.weather_code);
+          // Todo: Remove other weather codes
+          document.getElementById('current-weather-widget').classList.add(weatherCategory(weather.current.weather_code))
+
+          weather.daily.temperature_2m_max.forEach((temp, index) => {
+            document.getElementById('forecast-temperature-' + (index + 1)).textContent = temp + "°C";
+          });
+          weather.daily.weather_code.forEach((code, index) => {
+            // document.getElementById('forecast-weather-' + (index + 1)).textContent = describeWeather(code);
+            // Todo: Remove other weather codes
+            document.getElementById('forecast-widget-' + (index + 1)).classList.add(weatherCategory(code))
+          });
+        });
+  });
+
+  function describeWeather(weatherCode) {
+    const weatherCodes = {
+      0: 'Sunny',
+      1: 'Clouds clearing',
+      2: 'Partly cloudy',
+      3: 'Clouds forming',
+      4: 'Smoky',
+      5: 'Hazy',
+      6: 'Dusty',
+      7: 'Sandy',
+      9: 'Dust whirls',
+      10: 'Misty',
+      11: 'Mist patchy',
+      12: 'Foggy',
+      13: 'Lightning',
+      14: 'Drizzling',
+      15: 'Distant raining',
+      16: 'Close raining',
+      17: 'Storming',
+      18: 'Squalling',
+      19: 'Funnel clouding',
+      20: 'Recent drizzle',
+      21: 'Recent rain',
+      22: 'Recent snow',
+      23: 'Recent ice',
+      24: 'Recent hail',
+      25: 'Recent rain',
+      26: 'Recent snow',
+      27: 'Recent hail',
+      28: 'Recent fog',
+      29: 'Recent thunderstorm',
+      30: 'Sandstormed',
+      31: 'Sandstorm',
+      32: 'Sandstorming',
+      33: 'Severe sandstormed',
+      34: 'Severe sandstorm',
+      35: 'Severe sandstorming',
+      36: 'Snowing',
+      37: 'Heavy Snow',
+      38: 'Snowing',
+      39: 'Heavy Snow',
+      40: 'Distant fog',
+      41: 'Fog patches',
+      42: 'Fog clearing',
+      43: 'Heavy fog clearing',
+      44: 'Fog',
+      45: 'Heavy fog',
+      46: 'Fog developing',
+      47: 'Heavy fog developing',
+      48: 'Fog rime',
+      49: 'Heavy fog rime',
+      50: 'Slight drizzle patches',
+      51: 'Slight drizzle',
+      52: 'Drizzle patches',
+      53: 'Drizzle',
+      54: 'Heavy drizzle patches',
+      55: 'Heavy drizzle',
+      56: 'Slight freezing drizzle',
+      57: 'Freezing drizzle',
+      58: 'Slight rain',
+      59: 'Raining',
+      60: 'Slight rain patches',
+      61: 'Slight rain',
+      62: 'Rain patches',
+      63: 'Raining',
+      64: 'Heavy rain patches',
+      65: 'Heavy rain',
+      66: 'Slight freezing rain',
+      67: 'Freezing rain',
+      68: 'Slight rain and snow',
+      69: 'Rain and snow',
+      70: 'Slight snow patches',
+      71: 'Slight snow',
+      72: 'Snow patches',
+      73: 'Snowing',
+      74: 'Heavy snow patches',
+      75: 'Heavy snow',
+      76: 'Diamond dust',
+      77: 'Snow grains',
+      78: 'Snow crystals',
+      79: 'Ice pellets',
+      80: 'Some showers',
+      81: 'Showers',
+      82: 'Heavy showers',
+      83: 'Slight freezing showers',
+      84: 'Freezing showers',
+      85: 'Slight snow showers',
+      86: 'Snow showers',
+      87: 'Slight snow pellet showers',
+      88: 'Snow pellet showers',
+      89: 'Slight hail showers',
+      90: 'Hail showers',
+      91: 'Thunderstorm drizzle',
+      92: 'Thunderstorm rain',
+      93: 'Thunderstorm snow',
+      94: 'Thunderstorm hail',
+      95: 'Thunderstorm',
+      96: 'Thunderstorm hail',
+      97: 'Heavy thunderstorm',
+      98: 'Thunderstorm duststorm',
+      99: 'Thunderstorm heavy hail'
+    }
+    return weatherCodes[weatherCode] || 'Unknown';
+  }
+
+  function weatherCategory(weatherCode) {
+    const weatherCodes = {
+      0: 'weather-sunny',
+      1: 'weather-light-cloud',
+      2: 'weather-light-cloud',
+      3: 'weather-light-cloud',
+      4: 'weather-dust',
+      5: 'weather-fog',
+      6: 'weather-dust',
+      7: 'weather-dust',
+      9: 'weather-dust',
+      10: 'weather-fog',
+      11: 'weather-fog',
+      12: 'weather-fog',
+      13: 'weather-storm',
+      14: 'weather-light-rain',
+      15: 'weather-light-rain',
+      16: 'weather-light-rain',
+      17: 'weather-storm',
+      18: 'weather-storm',
+      19: 'weather-cloud',
+      20: 'weather-light-rain',
+      21: 'weather-rain',
+      22: 'weather-snow',
+      23: 'weather-snow',
+      24: 'weather-hail',
+      25: 'weather-rain',
+      26: 'weather-snow',
+      27: 'weather-hail',
+      28: 'weather-fog',
+      29: 'weather-storm',
+      30: 'weather-dust',
+      31: 'weather-dust',
+      32: 'weather-dust',
+      33: 'weather-dust',
+      34: 'weather-dust',
+      35: 'weather-dust',
+      36: 'weather-snow',
+      37: 'weather-snow',
+      38: 'weather-snow',
+      39: 'weather-snow',
+      40: 'weather-fog',
+      41: 'weather-fog',
+      42: 'weather-fog',
+      43: 'weather-fog',
+      44: 'weather-fog',
+      45: 'weather-fog',
+      46: 'weather-fog',
+      47: 'weather-fog',
+      48: 'weather-fog',
+      49: 'weather-fog',
+      50: 'weather-light-rain',
+      51: 'weather-light-rain',
+      52: 'weather-light-rain',
+      53: 'weather-light-rain',
+      54: 'weather-rain',
+      55: 'weather-rain',
+      56: 'weather-light-rain',
+      57: 'weather-rain',
+      58: 'weather-light-rain',
+      59: 'weather-rain',
+      60: 'weather-light-rain',
+      61: 'weather-light-rain',
+      62: 'weather-rain',
+      63: 'weather-rain',
+      64: 'weather-heavy-rain',
+      65: 'weather-heavy-rain',
+      66: 'weather-light-rain',
+      67: 'weather-rain',
+      68: 'weather-light-rain',
+      69: 'weather-rain',
+      70: 'weather-snow',
+      71: 'weather-snow',
+      72: 'weather-snow',
+      73: 'weather-snow',
+      74: 'weather-snow',
+      75: 'weather-snow',
+      76: 'weather-dust',
+      77: 'weather-snow',
+      78: 'weather-snow',
+      79: 'weather-hail',
+      80: 'weather-rain',
+      81: 'weather-rain',
+      82: 'weather-heavy-rain',
+      83: 'weather-light-rain',
+      84: 'weather-rain',
+      85: 'weather-snow',
+      86: 'weather-snow',
+      87: 'weather-snow',
+      88: 'weather-snow',
+      89: 'weather-hail',
+      90: 'weather-hail',
+      91: 'weather-storm',
+      92: 'weather-storm',
+      93: 'weather-storm',
+      94: 'weather-storm',
+      95: 'weather-storm',
+      96: 'weather-storm',
+      97: 'weather-storm',
+      98: 'weather-storm',
+      99: 'weather-hail'
+    }
+    return weatherCodes[weatherCode] || 'Unknown';
+  }
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleDateString('en-US', { month: 'short' });
+
+    const suffix = (day % 10 === 1 && day !== 11) ? 'st' :
+                   (day % 10 === 2 && day !== 12) ? 'nd' :
+                   (day % 10 === 3 && day !== 13) ? 'rd' : 'th';
+
+    return `${day}${suffix} ${month}`;
+  }
+
+</script>

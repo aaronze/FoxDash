@@ -69,3 +69,10 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem 'csv'
+gem 'pry'
+gem 'pry-byebug'
+gem 'fiddle'
+gem 'rb-readline'
+gem 'telegram-bot-ruby'

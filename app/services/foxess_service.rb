@@ -19,6 +19,82 @@ class FoxessService
     'batDischargePower' => 'battery_discharge_rate',
   }.freeze
 
+  WORK_MODES = [
+    'SelfUse' => 'SelfUse',
+    'Feedin' => 'Feedin',
+    'Backup' => 'Backup',
+    'ForceCharge' => 'ForceCharge',
+    'ForceDischarge' => 'ForceDischarge',
+  ]
+
+  DEFAULT_GROUPS = [
+    {
+      'enable' => 1,
+      'startHour' => 10,
+      'startMinute' => 01,
+      'endHour' => 10,
+      'endMinute' => 59,
+      'workMode' => 'ForceDischarge',
+      'extraParam' => {
+        'importLimit' => 14500,
+        'exportLimit' => 10500,
+        'fdSoc' => 25
+      }
+    },
+    {
+      'enable' => 1,
+      'startHour' => 11,
+      'startMinute' => 02,
+      'endHour' => 13,
+      'endMinute' => 59,
+      'workMode' => 'ForceCharge',
+      'extraParam' => {
+        'importLimit' => 14500,
+        'exportLimit' => 10500,
+        'fdSoc' => 95
+      }
+    },
+    {
+      'enable' => 1,
+      'startHour' => 18,
+      'startMinute' => 1,
+      'endHour' => 19,
+      'endMinute' => 59,
+      'workMode' => 'ForceDischarge',
+      'extraParam' => {
+        'importLimit' => 14500,
+        'exportLimit' => 10500,
+        'fdSoc' => 55,
+      }
+    },
+    {
+      'enable' => 1,
+      'startHour' => 0,
+      'startMinute' => 0,
+      'endHour' => 23,
+      'endMinute' => 59,
+      'workMode' => 'SelfUse',
+      'extraParam' => {
+        'importLimit' => 14500,
+        'exportLimit' => 10500,
+        'fdSoc' => 10,
+      }
+    }
+  ]
+
+  def get_schedule
+    post('/op/v3/device/scheduler/get', { deviceSN: SERIAL_NUMBER })
+  end
+
+  def set_schedule(groups: DEFAULT_GROUPS)
+    params = {
+      'deviceSN' => SERIAL_NUMBER,
+      'groups' => groups
+    }
+
+    post('/op/v3/device/scheduler/enable', params)
+  end
+
   ##
   #    [{"deviceType" => "KH10",
   #       "hasBattery" => true,
@@ -31,6 +107,10 @@ class FoxessService
   #       "status" => 1}],
   def device_list
     post('/op/v0/device/list', { current_page: 1, page_size: 10 })
+  end
+
+  def offboard
+    post('/op/v0/vpp/oauth2/client/offboard', { deviceSN: SERIAL_NUMBER })
   end
 
   ##
@@ -99,7 +179,8 @@ class FoxessService
   #       {"unit" => "Ah", "name" => "Battery total discharge capacity", "variable" => "totalDischargeAh", "value" => 209.8},
   #       {"name" => "Battery cycle count", "variable" => "batCycleCount", "value" => "2"}],
   def real_data
-    post('/op/v1/device/real/query', { sns: [SERIAL_NUMBER] })
+    response = post('/op/v1/device/real/query', { sns: [SERIAL_NUMBER] })
+    response['result'].first['datas']
   end
 
   ##

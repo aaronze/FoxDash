@@ -40,3 +40,64 @@ canvas {
     width: 100% !important;
     height: 100% !important;
 }
+
+.weather-widget {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 16px;
+    color: white;
+    text-align: center;
+    margin: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.forecast-weather .weather-widget {
+    margin: 2px;
+    padding: 2px;
+}
+
+.weather-widget.weather-sunny {
+    background: linear-gradient(135deg, #f9d423, #f83600);
+}
+
+.weather-widget.weather-light-cloud {
+    background: linear-gradient(135deg, #bdc3c7, #2c3e50);
+}
+
+.weather-widget.weather-cloud {
+    background: linear-gradient(135deg, #bdc3c7, #2c3e50);
+}
+
+.weather-widget.weather-fog {
+    background: linear-gradient(135deg, #d7d2cc, #304352);
+}
+
+.weather-widget.weather-dust {
+    background: linear-gradient(135deg, #d3cbb8, #8c7452);
+}
+
+.weather-widget.weather-storm {
+    background: linear-gradient(135deg, #757f9a, #d7dde8);
+}
+
+.weather-widget.weather-light-rain {
+    background: linear-gradient(135deg, #a7c4f4, #346beb);
+}
+
+.weather-widget.weather-rain {
+    background: linear-gradient(135deg, #2e3192, #1bffff);
+}
+
+.weather-widget.weather-heavy-rain {
+    background: linear-gradient(135deg, #2e3192, #1bffff);
+}
+
+.weather-widget.weather-snow {
+    background: linear-gradient(135deg, #e6f1f5, #bcc6d9);
+}
+
+.weather-widget.weather-hail {
+    background: linear-gradient(135deg, #cfecd0, #a4c2a5);
+}
+
+
